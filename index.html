@@ -472,6 +472,80 @@
         }
 
         /* ========================================= */
+        /* 底部联系方式样式 - 大气现代化设计 */
+        /* ========================================= */
+
+        /*
+         * .contact-wrapper：联系方式容器
+         * 使用弹性布局，水平排列联系方式
+         * justify-content: center - 水平居中
+         * flex-wrap: wrap - 允许换行
+         * gap: 40px 60px - 联系方式之间的间距
+         */
+        .contact-wrapper {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 40px 60px;
+            margin-bottom: 40px;
+        }
+
+        /*
+         * .contact-item：单个联系方式容器
+         * 使用弹性布局，垂直排列标签和值
+         * align-items: center - 水平居中
+         */
+        .contact-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /*
+         * .contact-label：联系方式标签（如"邮箱"、"QQ"）
+         * font-size: 0.85rem - 字体较小
+         * color: #999 - 浅灰色
+         * text-transform: uppercase - 转换为大写
+         * letter-spacing: 2px - 字间距
+         */
+        .contact-label {
+            font-size: 0.85rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /*
+         * .contact-value：联系方式的值（如邮箱地址、电话号码）
+         * font-size: 1.1rem - 字体较大
+         * color: #333 - 深灰色
+         * text-decoration: none - 无下划线
+         * transition: color 0.3s ease - 颜色过渡效果
+         */
+        .contact-value {
+            font-size: 1.1rem;
+            color: #333;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        /*
+         * .contact-value:hover：联系方式值的悬停效果
+         * color: #d4af37 - 金色
+         */
+        .contact-value:hover {
+            color: #d4af37;
+        }
+
+        /*
+         * a.contact-value：链接样式的联系方式
+         */
+        a.contact-value:hover {
+            color: #d4af37;
+        }
+
+        /* ========================================= */
         /* 响应式设计 - 让网页适配不同设备 */
         /* ========================================= */
 
@@ -520,6 +594,16 @@
              */
             .media-container {
                 padding-bottom: 75%;
+            }
+
+            /*
+             * .contact-wrapper：小屏幕时的联系方式容器
+             * flex-direction: column - 垂直排列
+             * gap: 30px - 减小间距
+             */
+            .contact-wrapper {
+                flex-direction: column;
+                gap: 30px;
             }
         }
 
@@ -586,30 +670,33 @@
                 </div>
             </div>
 
-            <!-- ========== 如需添加更多作品 ========== -->
-            <!-- 复制上面的 <div class="portfolio-item">...</div> 块 -->
-            <!-- 然后修改以下内容： -->
-            <!-- 1. img 标签的 src 属性改为您的图片路径 -->
-            <!-- 2. img 标签的 alt 属性改为您的图片描述 -->
-            <!-- 3. h3 标签的内容改为您的作品标题 -->
-            <!-- 4. p 标签的内容改为您的作品描述 -->
-            <!-- ===================================== -->
-
         </div>
     </section>
 
     <!-- ========================================= -->
-    <!-- 底部区域 - 版权信息和联系方式 -->
+    <!-- 底部区域 - 联系方式 -->
     <!-- ========================================= -->
     <footer>
-        <div class="footer-content">
-            <!-- 版权信息 -->
-            <!-- 修改方法：将"序白摄影工作室"改为您的工作室名称 -->
-            <p class="copyright">© 2026 序白摄影工作室. 保留所有权利.</p>
-            <!-- 联系方式 -->
-            <!-- 修改方法：将邮箱和电话改为您自己的联系方式 -->
-            <p class="contact">联系方式：rrrjq@qq.com | 19150733007</p>
+        <!-- 联系方式容器 -->
+        <div class="contact-wrapper">
+            <!-- 邮箱联系方式 -->
+            <div class="contact-item">
+                <span class="contact-label">邮箱</span>
+                <a href="mailto:rrrjq@qq.com" class="contact-value">rrrjq@qq.com</a>
+            </div>
+            <!-- QQ联系方式 -->
+            <div class="contact-item">
+                <span class="contact-label">QQ</span>
+                <span class="contact-value">3316973250</span>
+            </div>
+            <!-- 电话/微信联系方式 -->
+            <div class="contact-item">
+                <span class="contact-label">电话（同微信）</span>
+                <a href="tel:19150733007" class="contact-value">19150733007</a>
+            </div>
         </div>
+        <!-- 版权信息 -->
+        <p class="copyright">© 2026 序白摄影工作室. 保留所有权利.</p>
     </footer>
 
     <!-- ========================================= -->
