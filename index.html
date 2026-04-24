@@ -1,75 +1,327 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <!-- 页面元信息 -->
+    <!-- ========================================= -->
+    <!-- 页面元信息 - 设置网页的基本属性 -->
+    <!-- ========================================= -->
+
+    <!-- charset="UTF-8"：设置网页字符编码为UTF-8，支持中文显示 -->
     <meta charset="UTF-8">
+
+    <!-- viewport：让网页能够自适应不同设备的屏幕宽度 -->
+    <!-- width=device-width：网页宽度等于设备宽度 -->
+    <!-- initial-scale=1.0：网页初始缩放比例为100% -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>作品集 | 工作室名称</title>
-    <!-- 引入 CSS 样式 -->
+
+    <!-- title：浏览器标签页上显示的网页标题 -->
+    <title>作品集 | 序白摄影工作室</title>
+
+    <!-- ========================================= -->
+    <!-- CSS 样式区域 - 控制网页的外观和布局 -->
+    <!-- ========================================= -->
     <style>
-        /* 全局样式重置 */
+        /* ========================================= */
+        /* 全局样式重置 - 清除浏览器默认样式 */
+        /* ========================================= */
+
+        /*
+         * * 表示选择所有元素
+         * margin: 0 - 清除元素的外边距（元素与其他元素的距离）
+         * padding: 0 - 清除元素的内边距（元素内部内容与边框的距离）
+         * box-sizing: border-box - 让元素的宽度和高度包含内边距和边框
+         */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
-        /* 全局变量定义 */
+
+        /* ========================================= */
+        /* 全局变量定义 - 统一管理颜色等样式值 */
+        /* ========================================= */
+
+        /*
+         * :root 表示HTML文档的根元素
+         * --primary-color：主色调（黑色）
+         * --secondary-color：次要色调（深灰色）
+         * --light-color：浅色背景（浅灰色）
+         * --accent-color：强调色（金色，用于点缀）
+         * --transition：过渡动画效果
+         */
         :root {
-            --primary-color: #000;
-            --secondary-color: #333;
-            --light-color: #f5f5f5;
-            --accent-color: #d4af37; /* 金色点缀 */
-            --transition: all 0.3s ease;
+            --primary-color: #000;      /* 主色调：黑色 */
+            --secondary-color: #333;    /* 次要色调：深灰色 */
+            --light-color: #f5f5f5;     /* 浅色背景：浅灰色 */
+            --accent-color: #d4af37;    /* 强调色：金色，用于点缀 */
+            --transition: all 0.3s ease; /* 过渡效果：0.3秒的平滑过渡 */
         }
-        
-        /* 基础样式 */
+
+        /* ========================================= */
+        /* 图片查看器（大图预览）样式 */
+        /* 当用户点击作品卡片时会弹出这个全屏查看器 */
+        /* ========================================= */
+
+        /*
+         * .lightbox 类：图片查看器的整体容器
+         * display: none - 默认隐藏这个元素
+         * position: fixed - 相对于浏览器窗口定位
+         * top/left: 0 - 定位在浏览器窗口的左上角
+         * width/height: 100% - 占满整个浏览器窗口
+         * background-color: rgba(0, 0, 0, 0.9) - 半透明黑色背景
+         * z-index: 1000 - 设置层级，确保显示在其他元素之上
+         * overflow: auto - 内容超出时显示滚动条
+         */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            overflow: auto;
+        }
+
+        /*
+         * .lightbox.active：当图片查看器打开时的样式
+         * display: block - 显示这个元素
+         */
+        .lightbox.active {
+            display: block;
+        }
+
+        /*
+         * .lightbox-content：图片查看器中显示图片的容器
+         * max-width: 90% - 最大宽度为浏览器窗口的90%
+         * max-height: 90vh - 最大高度为浏览器窗口高度的90%
+         * margin: 5vh auto - 上下外边距为5vh，左右外边距自动（居中）
+         */
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90vh;
+            margin: 5vh auto;
+        }
+
+        /*
+         * .lightbox img：图片查看器中的图片样式
+         * width: 100% - 图片宽度占满容器
+         * height: auto - 图片高度自动调整，保持宽高比
+         * display: block - 将图片设置为块级元素
+         */
+        .lightbox img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /*
+         * .lightbox-close：关闭按钮的样式
+         * position: absolute - 相对于父容器定位
+         * top/right: 20px - 距离父容器顶部和右部各20像素
+         * color: white - 文字颜色为白色
+         * font-size: 30px - 字体大小30像素
+         * cursor: pointer - 鼠标指针变为手型
+         * z-index: 1001 - 层级高于图片
+         */
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        /*
+         * .lightbox-nav：导航按钮容器（上一张/下一张）
+         * position: absolute - 相对于父容器定位
+         * top: 50% - 距离父容器顶部50%
+         * width: 100% - 宽度占满父容器
+         * display: flex - 使用弹性布局
+         * justify-content: space-between - 子元素两端对齐
+         * transform: translateY(-50%) - 向上移动自身高度的50%，实现垂直居中
+         */
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+
+        /*
+         * .lightbox-nav button：导航按钮的样式
+         * background-color: rgba(0, 0, 0, 0.5) - 半透明黑色背景
+         * color: white - 白色文字
+         * border: none - 无边框
+         * padding: 10px 20px - 内边距：上下10px，左右20px
+         * font-size: 24px - 字体大小24px
+         * cursor: pointer - 手型鼠标
+         * border-radius: 4px - 圆角4px
+         */
+        .lightbox-nav button {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 24px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        /*
+         * .lightbox-nav button:hover：导航按钮的悬停样式
+         * 当鼠标放在按钮上时，按钮的背景变深
+         */
+        .lightbox-nav button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        /*
+         * .lightbox-caption：图片说明文字的样式
+         * position: absolute - 相对于父容器定位
+         * bottom: 0 - 定位在父容器底部
+         * left: 0 - 定位在父容器左部
+         * width: 100% - 宽度占满父容器
+         * background-color: rgba(0, 0, 0, 0.7) - 半透明黑色背景
+         * color: white - 白色文字
+         * padding: 10px - 内边距10px
+         * text-align: center - 文字居中
+         */
+        .lightbox-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        /*
+         * .portfolio-item：作品卡片的样式
+         * cursor: pointer - 手型鼠标，表示可以点击
+         */
+        .portfolio-item {
+            cursor: pointer;
+        }
+
+        /* ========================================= */
+        /* 基础样式 - 设置网页的基本外观 */
+        /* ========================================= */
+
+        /*
+         * body：网页的主体部分
+         * font-family：设置字体为Helvetica Neue、Arial、无衬线字体
+         * line-height: 1.6 - 行高为字体的1.6倍
+         * color: var(--secondary-color) - 文字颜色使用前面定义的变量
+         * background-color: #fff - 背景颜色为白色
+         */
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
             line-height: 1.6;
             color: var(--secondary-color);
             background-color: #fff;
         }
-        
-        /* 头部样式 */
+
+        /* ========================================= */
+        /* 头部样式 - 网页顶部的标题区域 */
+        /* ========================================= */
+
+        /*
+         * header：网页的头部容器
+         * padding: 40px 20px - 内边距：上下40px，左右20px
+         * text-align: center - 内容居中
+         * border-bottom: 1px solid #eee - 底部添加一条浅灰色分隔线
+         */
         header {
             padding: 40px 20px;
             text-align: center;
             border-bottom: 1px solid #eee;
         }
-        
+
+        /*
+         * .header-content：头部内容容器
+         * max-width: 1200px - 最大宽度1200px
+         * margin: 0 auto - 上下外边距0，左右自动（水平居中）
+         */
         .header-content {
             max-width: 1200px;
             margin: 0 auto;
         }
-        
+
+        /*
+         * h1：一级标题的样式（工作室名称）
+         * font-size: 2.5rem - 字体大小为2.5倍根元素字体大小
+         * font-weight: 300 - 字体粗细为300（较细）
+         * margin-bottom: 10px - 底部外边距10px
+         * color: var(--primary-color) - 使用黑色
+         */
         h1 {
             font-size: 2.5rem;
             font-weight: 300;
             margin-bottom: 10px;
             color: var(--primary-color);
         }
-        
+
+        /*
+         * .tagline：口号/简介的样式
+         * font-size: 1.1rem - 字体大小为1.1倍
+         * color: #666 - 文字颜色为深灰色
+         * font-weight: 300 - 字体粗细为300（较细）
+         */
         .tagline {
             font-size: 1.1rem;
             color: #666;
             font-weight: 300;
         }
-        
-        /* 作品卡片区域 */
+
+        /* ========================================= */
+        /* 作品卡片区域样式 */
+        /* ========================================= */
+
+        /*
+         * .portfolio：作品卡片区域的容器
+         * max-width: 1200px - 最大宽度1200px
+         * margin: 60px auto - 上下外边距60px，左右自动
+         * padding: 0 20px - 左右内边距20px
+         */
         .portfolio {
             max-width: 1200px;
             margin: 60px auto;
             padding: 0 20px;
         }
-        
+
+        /*
+         * .portfolio-grid：作品卡片网格容器
+         * display: grid - 使用网格布局
+         * grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)) -
+         *   自动填充，每列最小350px，最大平分可用空间
+         * gap: 40px - 网格项目之间的间距为40px
+         */
         .portfolio-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
             gap: 40px;
         }
-        
-        /* 作品卡片样式 */
+
+        /* ========================================= */
+        /* 作品卡片样式 - 每个作品项目的容器 */
+        /* ========================================= */
+
+        /*
+         * .portfolio-item：单个作品卡片的容器
+         * background-color: #fff - 白色背景
+         * border-radius: 4px - 圆角4px
+         * overflow: hidden - 超出部分隐藏
+         * box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) - 轻微阴影效果
+         * transition: var(--transition) - 使用前面定义的过渡效果
+         */
         .portfolio-item {
             background-color: #fff;
             border-radius: 4px;
@@ -77,22 +329,43 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             transition: var(--transition);
         }
-        
+
+        /*
+         * .portfolio-item:hover：作品卡片的悬停效果
+         * 当鼠标放在卡片上时，卡片向上移动5px，阴影加深
+         */
         .portfolio-item:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
         }
-        
-        /* 媒体容器 */
+
+        /* ========================================= */
+        /* 媒体容器样式 - 放置图片的容器 */
+        /* ========================================= */
+
+        /*
+         * .media-container：图片容器
+         * position: relative - 相对定位，作为内部绝对定位元素的参考
+         * width: 100% - 宽度占满父容器
+         * padding-bottom: 60% - 高度为宽度的60%（5:3比例）
+         * overflow: hidden - 超出部分隐藏
+         */
         .media-container {
             position: relative;
             width: 100%;
-            padding-bottom: 60%; /* 图片/视频比例 5:3 */
+            padding-bottom: 60%;
             overflow: hidden;
         }
-        
-        .media-container img,
-        .media-container video {
+
+        /*
+         * .media-container img：容器内的图片样式
+         * position: absolute - 绝对定位
+         * top/left: 0 - 定位在容器左上角
+         * width/height: 100% - 占满整个容器
+         * object-fit: cover - 图片填充容器并保持比例
+         * transition: var(--transition) - 过渡效果
+         */
+        .media-container img {
             position: absolute;
             top: 0;
             left: 0;
@@ -101,173 +374,487 @@
             object-fit: cover;
             transition: var(--transition);
         }
-        
-        .portfolio-item:hover .media-container img,
-        .portfolio-item:hover .media-container video {
+
+        /*
+         * .portfolio-item:hover .media-container img：悬停时图片的样式
+         * transform: scale(1.05) - 图片放大1.05倍
+         */
+        .portfolio-item:hover .media-container img {
             transform: scale(1.05);
         }
-        
-        /* 视频控制 */
-        .media-container video {
-            cursor: pointer;
-        }
-        
-        /* 作品信息 */
+
+        /* ========================================= */
+        /* 作品信息样式 - 标题和描述 */
+        /* ========================================= */
+
+        /*
+         * .portfolio-info：作品信息容器
+         * padding: 20px - 内边距20px
+         */
         .portfolio-info {
             padding: 20px;
         }
-        
+
+        /*
+         * .portfolio-title：作品标题样式
+         * font-size: 1.2rem - 字体大小1.2倍
+         * font-weight: 500 - 字体粗细500（中等）
+         * margin-bottom: 10px - 底部外边距10px
+         * color: var(--primary-color) - 黑色
+         */
         .portfolio-title {
             font-size: 1.2rem;
             font-weight: 500;
             margin-bottom: 10px;
             color: var(--primary-color);
         }
-        
+
+        /*
+         * .portfolio-description：作品描述样式
+         * font-size: 0.9rem - 字体大小0.9倍
+         * color: #666 - 深灰色
+         * line-height: 1.5 - 行高1.5倍
+         */
         .portfolio-description {
             font-size: 0.9rem;
             color: #666;
             line-height: 1.5;
         }
-        
-        /* 底部样式 */
+
+        /* ========================================= */
+        /* 底部样式 - 网页底部的版权和联系方式 */
+        /* ========================================= */
+
+        /*
+         * footer：底部容器
+         * padding: 40px 20px - 内边距
+         * text-align: center - 居中对齐
+         * border-top: 1px solid #eee - 顶部添加分隔线
+         * margin-top: 80px - 顶部外边距
+         */
         footer {
             padding: 40px 20px;
             text-align: center;
             border-top: 1px solid #eee;
             margin-top: 80px;
         }
-        
+
+        /*
+         * .footer-content：底部内容容器
+         * max-width: 1200px - 最大宽度
+         * margin: 0 auto - 水平居中
+         */
         .footer-content {
             max-width: 1200px;
             margin: 0 auto;
         }
-        
+
+        /*
+         * .copyright：版权信息样式
+         * font-size: 0.9rem - 字体大小
+         * color: #999 - 浅灰色
+         * margin-bottom: 10px - 底部外边距
+         */
         .copyright {
             font-size: 0.9rem;
             color: #999;
             margin-bottom: 10px;
         }
-        
+
+        /*
+         * .contact：联系方式样式
+         * font-size: 0.9rem - 字体大小
+         * color: #666 - 深灰色
+         */
         .contact {
             font-size: 0.9rem;
             color: #666;
         }
-        
-        /* 响应式设计 */
+
+        /* ========================================= */
+        /* 响应式设计 - 让网页适配不同设备 */
+        /* ========================================= */
+
+        /*
+         * @media (max-width: 768px)：当屏幕宽度小于768px时应用的样式
+         * 这是针对手机等小屏幕设备的样式
+         */
         @media (max-width: 768px) {
+            /*
+             * header：小屏幕时的头部样式
+             * padding: 30px 20px - 减小内边距
+             */
             header {
                 padding: 30px 20px;
             }
-            
+
+            /*
+             * h1：小屏幕时的标题字体大小
+             * font-size: 2rem - 减小为2倍
+             */
             h1 {
                 font-size: 2rem;
             }
-            
+
+            /*
+             * .portfolio：小屏幕时的作品区域
+             * margin: 40px auto - 减小上下外边距
+             */
             .portfolio {
                 margin: 40px auto;
             }
-            
+
+            /*
+             * .portfolio-grid：小屏幕时的网格布局
+             * grid-template-columns: 1fr - 只显示一列
+             * gap: 30px - 减小间距
+             */
             .portfolio-grid {
                 grid-template-columns: 1fr;
                 gap: 30px;
             }
-            
+
+            /*
+             * .media-container：小屏幕时的媒体容器
+             * padding-bottom: 75% - 调整为4:3比例
+             */
             .media-container {
-                padding-bottom: 75%; /* 移动设备上调整比例为 4:3 */
+                padding-bottom: 75%;
             }
         }
-        
-        /* 金色强调元素 */
+
+        /*
+         * .accent：金色强调元素样式
+         * 如果需要使用金色强调某些文字，可以添加这个类
+         */
         .accent {
             color: var(--accent-color);
         }
     </style>
 </head>
+
+<!-- ========================================= -->
+<!-- 网页主体内容 -->
+<!-- ========================================= -->
 <body>
-    <!-- 头部区域 -->
+
+    <!-- ========================================= -->
+    <!-- 头部区域 - 显示工作室名称和简介 -->
+    <!-- ========================================= -->
     <header>
         <div class="header-content">
-            <h1>工作室名称</h1>
-            <p class="tagline">一句话简介，展示工作室特色</p>
+            <!-- 工作室名称（一级标题） -->
+            <h1>序白摄影工作室</h1>
+            <!-- 工作室口号/简介 -->
+            <p class="tagline">用心定格真实</p>
         </div>
     </header>
-    
-    <!-- 作品卡片区域 -->
+
+    <!-- ========================================= -->
+    <!-- 作品卡片区域 - 展示所有作品项目 -->
+    <!-- ========================================= -->
     <section class="portfolio">
+        <!-- 作品网格容器 -->
         <div class="portfolio-grid">
-            <!-- 作品项目 1 - 图片 -->
+
+            <!-- ========== 作品项目 1 ========== -->
+            <!-- 每个作品卡片都是一个 .portfolio-item -->
+            <!-- 修改方法：修改 src="images/xxx.jpg" 为您的图片路径 -->
+            <!-- 修改方法：修改 alt="xxx" 为图片描述（用于无障碍访问） -->
             <div class="portfolio-item">
+                <!-- 媒体容器：放置作品的主图 -->
                 <div class="media-container">
+                    <!-- src: 图片路径，请将图片放入 images 文件夹 -->
+                    <!-- alt: 图片描述文字，修改为您的作品名称 -->
                     <img src="images/work1.jpg" alt="作品标题 1">
                 </div>
+                <!-- 作品信息区域 -->
                 <div class="portfolio-info">
                     <h3 class="portfolio-title">作品标题 1</h3>
-                    <p class="portfolio-description">这是一个作品的简短描述，介绍作品的主要内容和特点。</p>
                 </div>
             </div>
-            
-            <!-- 作品项目 2 - 视频 -->
+
+            <!-- ========== 作品项目 2 ========== -->
+            <!-- 如需添加更多作品，复制以下整个 div 块并修改内容 -->
             <div class="portfolio-item">
                 <div class="media-container">
-                    <video src="images/work2.mp4" muted loop></video>
-                </div>
-                <div class="portfolio-info">
-                    <h3 class="portfolio-title">作品标题 2</h3>
-                    <p class="portfolio-description">这是一个视频作品的简短描述，介绍视频的主要内容和特点。</p>
-                </div>
-            </div>
-            
-            <!-- 作品项目 3 - 图片 -->
-            <div class="portfolio-item">
-                <div class="media-container">
+                    <!-- 修改 src 属性为您的图片路径 -->
                     <img src="images/work3.jpg" alt="作品标题 3">
                 </div>
                 <div class="portfolio-info">
                     <h3 class="portfolio-title">作品标题 3</h3>
-                    <p class="portfolio-description">这是一个作品的简短描述，介绍作品的主要内容和特点。</p>
                 </div>
             </div>
-            
-            <!-- 作品项目 4 - 视频 -->
-            <div class="portfolio-item">
-                <div class="media-container">
-                    <video src="images/work4.mp4" muted loop></video>
-                </div>
-                <div class="portfolio-info">
-                    <h3 class="portfolio-title">作品标题 4</h3>
-                    <p class="portfolio-description">这是一个视频作品的简短描述，介绍视频的主要内容和特点。</p>
-                </div>
-            </div>
-            
-            <!-- 可以继续添加更多作品项目 -->
+
+            <!-- ========== 如需添加更多作品 ========== -->
+            <!-- 复制上面的 <div class="portfolio-item">...</div> 块 -->
+            <!-- 然后修改以下内容： -->
+            <!-- 1. img 标签的 src 属性改为您的图片路径 -->
+            <!-- 2. img 标签的 alt 属性改为您的图片描述 -->
+            <!-- 3. h3 标签的内容改为您的作品标题 -->
+            <!-- 4. p 标签的内容改为您的作品描述 -->
+            <!-- ===================================== -->
+
         </div>
     </section>
-    
-    <!-- 底部区域 -->
+
+    <!-- ========================================= -->
+    <!-- 底部区域 - 版权信息和联系方式 -->
+    <!-- ========================================= -->
     <footer>
         <div class="footer-content">
-            <p class="copyright">© 2026 工作室名称. 保留所有权利.</p>
-            <p class="contact">联系方式：邮箱地址 | 电话号码</p>
+            <!-- 版权信息 -->
+            <!-- 修改方法：将"序白摄影工作室"改为您的工作室名称 -->
+            <p class="copyright">© 2026 序白摄影工作室. 保留所有权利.</p>
+            <!-- 联系方式 -->
+            <!-- 修改方法：将邮箱和电话改为您自己的联系方式 -->
+            <p class="contact">联系方式：rrrjq@qq.com | 19150733007</p>
         </div>
     </footer>
-    
-    <!-- JavaScript 代码 -->
+
+    <!-- ========================================= -->
+    <!-- 图片查看器（大图预览）HTML 结构 -->
+    <!-- 当用户点击作品卡片时，会显示这个全屏图片查看器 -->
+    <!-- ========================================= -->
+    <div class="lightbox" id="lightbox">
+        <!-- 关闭按钮（×符号） -->
+        <span class="lightbox-close">&times;</span>
+        <!-- 图片查看器内容区域 -->
+        <div class="lightbox-content">
+            <!-- 当前显示的图片 -->
+            <img id="lightbox-img" src="" alt="">
+            <!-- 图片说明文字 -->
+            <div class="lightbox-caption" id="lightbox-caption"></div>
+            <!-- 导航按钮容器 -->
+            <div class="lightbox-nav">
+                <!-- 上一张按钮 -->
+                <button id="lightbox-prev">&lt;</button>
+                <!-- 下一张按钮 -->
+                <button id="lightbox-next">&gt;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- JavaScript 代码 - 控制网页的交互行为 -->
+    <!-- ========================================= -->
     <script>
-        // 页面加载完成后执行
+        // =========================================
+        // 页面加载完成后执行的代码
+        // =========================================
+        // DOMContentLoaded：当HTML文档完全加载并解析完成后触发
         document.addEventListener('DOMContentLoaded', function() {
-            // 获取所有视频元素
-            const videos = document.querySelectorAll('video');
-            
-            // 为每个视频添加点击播放/暂停功能
-            videos.forEach(video => {
-                video.addEventListener('click', function() {
-                    if (video.paused) {
-                        video.play();
-                    } else {
-                        video.pause();
+
+            // =========================================
+            // 获取页面元素 - 通过ID获取HTML中的元素
+            // =========================================
+
+            // lightbox：图片查看器的大容器
+            const lightbox = document.getElementById('lightbox');
+            // lightboxImg：图片查看器中显示的图片元素
+            const lightboxImg = document.getElementById('lightbox-img');
+            // lightboxCaption：图片下方的说明文字
+            const lightboxCaption = document.getElementById('lightbox-caption');
+            // lightboxClose：关闭按钮元素
+            const lightboxClose = document.querySelector('.lightbox-close');
+            // lightboxPrev：上一张按钮
+            const lightboxPrev = document.getElementById('lightbox-prev');
+            // lightboxNext：下一张按钮
+            const lightboxNext = document.getElementById('lightbox-next');
+
+            // =========================================
+            // 作品图片数据 - 这是您需要修改的核心部分
+            // =========================================
+            // 这个对象存储了每个作品对应的多张图片
+            // 修改方法：
+            // 1. 将 'images/xxx.jpg' 改为您实际上传的图片路径
+            // 2. 将 '作品1-1' 改为您想显示的图片说明文字
+            // 3. 每个作品可以有任意多张图片，添加或删除数组中的对象即可
+
+            // galleryMapping 数组：定义作品卡片与图片集合的对应关系
+            // galleryMapping[0] = 'work1' -> 对应第1个作品卡片
+            // galleryMapping[1] = 'work3' -> 对应第2个作品卡片
+            // galleryMapping[2] = 'work5' -> 对应第3个作品卡片
+            // 如果添加新的作品卡片，需要在这里添加对应的键名
+            const galleryMapping = ['work1', 'work3', 'work5'];
+
+            // portfolioImages 对象：存储每个作品的图片集合
+            const portfolioImages = {
+                // work1：第1个作品卡片的图片集合
+                // src: 图片的路径（相对于 index.html 文件）
+                // alt: 图片的说明文字
+                'work1': [
+                    { src: 'images/work1_1.jpg', alt: '作品1-1' },
+                    { src: 'images/work1_2.jpg', alt: '作品1-2' },
+                    { src: 'images/work1_3.jpg', alt: '作品1-3' }
+                ],
+
+                // work3：第2个作品卡片的图片集合
+                'work3': [
+                    { src: 'images/work3_1.jpg', alt: '作品3-1' },
+                    { src: 'images/work3_2.jpg', alt: '作品3-2' },
+                    { src: 'images/work3_3.jpg', alt: '作品3-3' },
+                    { src: 'images/work3_4.jpg', alt: '作品3-4' }
+                ],
+
+                // work5：第3个作品卡片的图片集合
+                'work5': [
+                    { src: 'images/work5_1.jpg', alt: '作品5-1' },
+                    { src: 'images/work5_2.jpg', alt: '作品5-2' }
+                ]
+
+                // =====================================
+                // 如需添加更多作品的图片，复制以下格式：
+                // 'workX': [
+                //     { src: 'images/xxx1.jpg', alt: '图片说明1' },
+                //     { src: 'images/xxx2.jpg', alt: '图片说明2' }
+                // ],
+                // 同时需要在 galleryMapping 数组中添加对应的键名
+                // =====================================
+            };
+
+            // currentGallery：当前查看的图片集合的键名
+            let currentGallery = '';
+            // currentIndex：当前查看的图片在集合中的索引（第几张图片，从0开始）
+            let currentIndex = 0;
+
+            // =========================================
+            // 打开图片查看器的函数
+            // =========================================
+            // gallery：图片集合的键名（如 'work1'）
+            // index：默认显示第几张图片（从0开始，0表示第一张）
+            function openLightbox(gallery, index = 0) {
+                // 设置当前查看的图片集合和索引
+                currentGallery = gallery;
+                currentIndex = index;
+                // 更新查看器中显示的图片
+                updateLightbox();
+                // 显示图片查看器（添加 active 类）
+                lightbox.classList.add('active');
+                // 禁止背景页面滚动
+                document.body.style.overflow = 'hidden';
+            }
+
+            // =========================================
+            // 更新图片查看器内容的函数
+            // =========================================
+            // 根据 currentGallery 和 currentIndex 更新显示的图片
+            function updateLightbox() {
+                // 获取当前图片集合
+                const images = portfolioImages[currentGallery];
+                // 如果图片集合存在且索引有效
+                if (images && images[currentIndex]) {
+                    // 更新图片的 src 属性（显示的图片路径）
+                    lightboxImg.src = images[currentIndex].src;
+                    // 更新图片说明文字
+                    lightboxCaption.textContent = images[currentIndex].alt;
+                }
+            }
+
+            // =========================================
+            // 关闭图片查看器的函数
+            // =========================================
+            function closeLightbox() {
+                // 隐藏图片查看器（移除 active 类）
+                lightbox.classList.remove('active');
+                // 恢复背景页面滚动
+                document.body.style.overflow = '';
+            }
+
+            // =========================================
+            // 显示下一张图片的函数
+            // =========================================
+            function nextImage() {
+                // 获取当前图片集合
+                const images = portfolioImages[currentGallery];
+                if (images) {
+                    // 计算下一张图片的索引
+                    // (currentIndex + 1) % images.length 实现循环
+                    currentIndex = (currentIndex + 1) % images.length;
+                    // 更新显示的图片
+                    updateLightbox();
+                }
+            }
+
+            // =========================================
+            // 显示上一张图片的函数
+            // =========================================
+            function prevImage() {
+                // 获取当前图片集合
+                const images = portfolioImages[currentGallery];
+                if (images) {
+                    // 计算上一张图片的索引
+                    // (currentIndex - 1 + images.length) % images.length 实现循环
+                    currentIndex = (currentIndex - 1 + images.length) % images.length;
+                    // 更新显示的图片
+                    updateLightbox();
+                }
+            }
+
+            // =========================================
+            // 为作品卡片添加点击事件
+            // =========================================
+            // querySelectorAll：获取所有 class 为 "portfolio-item" 的元素
+            const portfolioItems = document.querySelectorAll('.portfolio-item');
+            // forEach：遍历每个作品卡片
+            portfolioItems.forEach((item, index) => {
+                // 为每个卡片添加点击事件监听器
+                item.addEventListener('click', function() {
+                    // 如果 galleryMapping 中存在对应的图片集合
+                    if (galleryMapping[index]) {
+                        // 打开图片查看器，显示该作品的图片
+                        openLightbox(galleryMapping[index]);
                     }
                 });
+            });
+
+            // =========================================
+            // 关闭按钮的点击事件
+            // =========================================
+            lightboxClose.addEventListener('click', closeLightbox);
+
+            // =========================================
+            // 导航按钮的点击事件
+            // =========================================
+            // 点击"上一张"按钮
+            lightboxPrev.addEventListener('click', prevImage);
+            // 点击"下一张"按钮
+            lightboxNext.addEventListener('click', nextImage);
+
+            // =========================================
+            // 点击图片查看器外部区域关闭
+            // =========================================
+            lightbox.addEventListener('click', function(e) {
+                // 如果点击的目标是 lightbox 本身（而不是内部元素）
+                if (e.target === lightbox) {
+                    // 关闭图片查看器
+                    closeLightbox();
+                }
+            });
+
+            // =========================================
+            // 键盘快捷键支持
+            // =========================================
+            // 当用户按下键盘时触发
+            document.addEventListener('keydown', function(e) {
+                // 如果图片查看器是打开状态
+                if (lightbox.classList.contains('active')) {
+                    // 根据按下的键执行相应操作
+                    switch(e.key) {
+                        // ESC 键：关闭图片查看器
+                        case 'Escape':
+                            closeLightbox();
+                            break;
+                        // 左箭头键：显示上一张
+                        case 'ArrowLeft':
+                            prevImage();
+                            break;
+                        // 右箭头键：显示下一张
+                        case 'ArrowRight':
+                            nextImage();
+                            break;
+                    }
+                }
             });
         });
     </script>
