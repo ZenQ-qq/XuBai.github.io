@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <!-- 页面元信息 -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>作品集 | 工作室名称</title>
+    <!-- 引入 CSS 样式 -->
+    <style>
+        /* 全局样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* 全局变量定义 */
+        :root {
+            --primary-color: #000;
+            --secondary-color: #333;
+            --light-color: #f5f5f5;
+            --accent-color: #d4af37; /* 金色点缀 */
+            --transition: all 0.3s ease;
+        }
+        
+        /* 基础样式 */
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--secondary-color);
+            background-color: #fff;
+        }
+        
+        /* 头部样式 */
+        header {
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .tagline {
+            font-size: 1.1rem;
+            color: #666;
+            font-weight: 300;
+        }
+        
+        /* 作品卡片区域 */
+        .portfolio {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 40px;
+        }
+        
+        /* 作品卡片样式 */
+        .portfolio-item {
+            background-color: #fff;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+        }
+        
+        .portfolio-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* 媒体容器 */
+        .media-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 60%; /* 图片/视频比例 5:3 */
+            overflow: hidden;
+        }
+        
+        .media-container img,
+        .media-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        
+        .portfolio-item:hover .media-container img,
+        .portfolio-item:hover .media-container video {
+            transform: scale(1.05);
+        }
+        
+        /* 视频控制 */
+        .media-container video {
+            cursor: pointer;
+        }
+        
+        /* 作品信息 */
+        .portfolio-info {
+            padding: 20px;
+        }
+        
+        .portfolio-title {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .portfolio-description {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        /* 底部样式 */
+        footer {
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 1px solid #eee;
+            margin-top: 80px;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .copyright {
+            font-size: 0.9rem;
+            color: #999;
+            margin-bottom: 10px;
+        }
+        
+        .contact {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            header {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .portfolio {
+                margin: 40px auto;
+            }
+            
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .media-container {
+                padding-bottom: 75%; /* 移动设备上调整比例为 4:3 */
+            }
+        }
+        
+        /* 金色强调元素 */
+        .accent {
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- 头部区域 -->
+    <header>
+        <div class="header-content">
+            <h1>工作室名称</h1>
+            <p class="tagline">一句话简介，展示工作室特色</p>
+        </div>
+    </header>
+    
+    <!-- 作品卡片区域 -->
+    <section class="portfolio">
+        <div class="portfolio-grid">
+            <!-- 作品项目 1 - 图片 -->
+            <div class="portfolio-item">
+                <div class="media-container">
+                    <img src="images/work1.jpg" alt="作品标题 1">
+                </div>
+                <div class="portfolio-info">
+                    <h3 class="portfolio-title">作品标题 1</h3>
+                    <p class="portfolio-description">这是一个作品的简短描述，介绍作品的主要内容和特点。</p>
+                </div>
+            </div>
+            
+            <!-- 作品项目 2 - 视频 -->
+            <div class="portfolio-item">
+                <div class="media-container">
+                    <video src="images/work2.mp4" muted loop></video>
+                </div>
+                <div class="portfolio-info">
+                    <h3 class="portfolio-title">作品标题 2</h3>
+                    <p class="portfolio-description">这是一个视频作品的简短描述，介绍视频的主要内容和特点。</p>
+                </div>
+            </div>
+            
+            <!-- 作品项目 3 - 图片 -->
+            <div class="portfolio-item">
+                <div class="media-container">
+                    <img src="images/work3.jpg" alt="作品标题 3">
+                </div>
+                <div class="portfolio-info">
+                    <h3 class="portfolio-title">作品标题 3</h3>
+                    <p class="portfolio-description">这是一个作品的简短描述，介绍作品的主要内容和特点。</p>
+                </div>
+            </div>
+            
+            <!-- 作品项目 4 - 视频 -->
+            <div class="portfolio-item">
+                <div class="media-container">
+                    <video src="images/work4.mp4" muted loop></video>
+                </div>
+                <div class="portfolio-info">
+                    <h3 class="portfolio-title">作品标题 4</h3>
+                    <p class="portfolio-description">这是一个视频作品的简短描述，介绍视频的主要内容和特点。</p>
+                </div>
+            </div>
+            
+            <!-- 可以继续添加更多作品项目 -->
+        </div>
+    </section>
+    
+    <!-- 底部区域 -->
+    <footer>
+        <div class="footer-content">
+            <p class="copyright">© 2026 工作室名称. 保留所有权利.</p>
+            <p class="contact">联系方式：邮箱地址 | 电话号码</p>
+        </div>
+    </footer>
+    
+    <!-- JavaScript 代码 -->
+    <script>
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取所有视频元素
+            const videos = document.querySelectorAll('video');
+            
+            // 为每个视频添加点击播放/暂停功能
+            videos.forEach(video => {
+                video.addEventListener('click', function() {
+                    if (video.paused) {
+                        video.play();
+                    } else {
+                        video.pause();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
